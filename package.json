@@ -2,6 +2,10 @@
   "name": "react-task-runner",
   "version": "1.0.0",
   "description": "An asynchronous task runner built on react and redux.",
+  "keywords": [
+    "react", "redux", "async", "taskrabbit", "taskrunner", "react-native", "react-redux"
+  ],
+  "homepage": "https://github.com/willbenmitch/react-task-runner",
   "main": "src/index.js",
   "author": "willbenmitch",
   "license": "MIT",
