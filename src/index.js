@@ -10,6 +10,7 @@ import * as statusTypes from './statusTypes'
 
 import type { Task as ReducerTask } from './reducer'
 import type { Action, ActionWithoutPayload } from './actions'
+import TaskRunnerComponent from './TaskRunnerComponent'
 
 export type Task = ReducerTask
 
@@ -42,6 +43,8 @@ export default class TaskRunner extends React.PureComponent<Props> {
         return null
     }
 }
+
+export const Queue = TaskRunnerComponent
 
 export type AddTask = (queueName: string, task: ReducerTask) => void | Action
 export const addTask: AddTask = (queueName: string, task: ReducerTask) => {
