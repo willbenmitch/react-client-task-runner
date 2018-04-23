@@ -1,11 +1,8 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
-
-# expo
-TestApp/.expo/
+# TestApp
+/TestApp
 
 # dependencies
-/node_modules
-/TestApp/node_modules
+/node_modules*
 
 # misc
 .env.local
@@ -17,10 +14,6 @@ TestApp/.expo/
 .flowconfig
 .eslintrc
 .vscode/
-.DS_Store
 
-npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-

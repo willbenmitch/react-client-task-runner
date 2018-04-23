@@ -1,6 +1,6 @@
 {
   "name": "react-task-runner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An asynchronous task runner built on react and redux.",
   "keywords": [
     "react", "redux", "async", "taskrabbit", "taskrunner", "react-native", "react-redux"

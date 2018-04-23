@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
 import configureStore from './configureStore'
-import { TASK_ADDED, TASK_REMOVED, QUEUE_CLEAR } from './actionTypes'
+import { TASK_ADDED, TASK_REMOVED, QUEUE_CLEAR, TASK_RETRY } from './actionTypes'
 import * as statusTypes from './statusTypes'
 
 import type { Task as ReducerTask } from './reducer'
@@ -52,7 +52,7 @@ export const addTask: AddTask = (queueName: string, task: ReducerTask) => {
         return store.dispatch({
             type: TASK_ADDED,
             queueName,
-            payload: { task },
+            payload: { task: { ...task, status: PENDING } },
         })
 
     return
@@ -65,6 +65,18 @@ export const removeTask: RemoveTask = (queueName: string, task: ReducerTask) => 
             type: TASK_REMOVED,
             queueName,
             payload: { task },
+        })
+
+    return
+}
+
+export type RetryTask = (queueName: string, task: ReducerTask) => void | Action
+export const retryTask: RetryTask = (queueName: string, task: ReducerTask) => {
+    if (store)
+        return store.dispatch({
+            type: TASK_RETRY,
+            queueName,
+            payload: { task: { ...task, status: PENDING } },
         })
 
     return

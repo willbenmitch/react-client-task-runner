@@ -4,6 +4,7 @@ import {
     TASK_REMOVED,
     TASK_COMPLETE,
     TASK_FAILED,
+    TASK_RETRY,
     QUEUE_CLEAR,
     TASK_IN_PROGRESS,
 } from './actionTypes'
@@ -46,6 +47,15 @@ export default (queueNames: string[]) => (
             const removedQueue = removedState[queueName].filter(item => item.id !== payload.task.id)
             // $FlowFixMe
             return { ...state, [queueName]: removedQueue }
+
+        case TASK_RETRY:
+            const retryState = { ...state }
+            // $FlowFixMe
+            const retryQueue = retryState[queueName].map(
+                item => (item.id === payload.task.id ? payload.task : item)
+            )
+            // $FlowFixMe
+            return { ...state, [queueName]: retryQueue }
 
         case QUEUE_CLEAR:
             // $FlowFixMe
