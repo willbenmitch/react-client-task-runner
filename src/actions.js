@@ -5,8 +5,9 @@ import {
     TASK_REMOVED,
     TASK_FAILED,
     TASK_COMPLETE,
-    QUEUE_CLEAR,
     TASK_RETRY,
+    QUEUE_CLEAR,
+    QUEUE_RESET,
 } from './actionTypes'
 
 import { PENDING, IN_PROGRESS, COMPLETE, FAILED } from './statusTypes'
@@ -77,4 +78,10 @@ export const retry: Retry = (queueName, task) => ({
     type: TASK_RETRY,
     queueName,
     payload: { task: { ...task, status: PENDING } },
+})
+
+export type Reset = (queueName: string) => void | ActionWithoutPayload
+export const reset: Reset = queueName => ({
+    type: QUEUE_RESET,
+    queueName,
 })

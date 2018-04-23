@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 
 import ActionComponent from './ActionComponent'
 
-import { inProgress, complete, failed, remove } from './actions'
+import { inProgress, complete, failed, remove, reset } from './actions'
 
-import type { InProgress, Complete, Failed, Remove } from './actions'
+import type { InProgress, Complete, Failed, Remove, Reset } from './actions'
 
 import type { Task } from './reducer'
 
@@ -20,6 +20,7 @@ type ConnectedProps = {|
     completeAction: Complete,
     failedAction: Failed,
     removeAction: Remove,
+    resetAction: Reset,
 |}
 
 type OwnProps = {|
@@ -32,6 +33,12 @@ type OwnProps = {|
 type Props = OwnProps & ConnectedProps
 
 class TaskRunnerComponent extends PureComponent<Props> {
+    componentDidMount() {
+        const { queueName, resetAction } = this.props
+        const queue = this.props.queues[queueName]
+        resetAction(queueName)
+    }
+
     handleTaskAction = (task: Task) => {
         const { queueName, onAction, inProgressAction, completeAction } = this.props
         inProgressAction(queueName, task)
@@ -73,4 +80,5 @@ export default connect(({ queues }) => ({ queues }), {
     completeAction: complete,
     failedAction: failed,
     removeAction: remove,
+    resetAction: reset,
 })(TaskRunnerComponent)

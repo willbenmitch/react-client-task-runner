@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
 import configureStore from './configureStore'
-import { TASK_ADDED, TASK_REMOVED, QUEUE_CLEAR, TASK_RETRY } from './actionTypes'
+import { TASK_ADDED, TASK_REMOVED, QUEUE_CLEAR, TASK_RETRY, QUEUE_RESET } from './actionTypes'
 import * as statusTypes from './statusTypes'
 
 import type { Task as ReducerTask } from './reducer'
@@ -47,7 +47,7 @@ export default class TaskRunner extends React.PureComponent<Props> {
 export const Queue = TaskRunnerComponent
 
 export type AddTask = (queueName: string, task: ReducerTask) => void | Action
-export const addTask: AddTask = (queueName: string, task: ReducerTask) => {
+export const addTask: AddTask = (queueName, task) => {
     if (store)
         return store.dispatch({
             type: TASK_ADDED,
@@ -59,7 +59,7 @@ export const addTask: AddTask = (queueName: string, task: ReducerTask) => {
 }
 
 export type RemoveTask = (queueName: string, task: ReducerTask) => void | Action
-export const removeTask: RemoveTask = (queueName: string, task: ReducerTask) => {
+export const removeTask: RemoveTask = (queueName, task) => {
     if (store)
         return store.dispatch({
             type: TASK_REMOVED,
@@ -71,7 +71,7 @@ export const removeTask: RemoveTask = (queueName: string, task: ReducerTask) => 
 }
 
 export type RetryTask = (queueName: string, task: ReducerTask) => void | Action
-export const retryTask: RetryTask = (queueName: string, task: ReducerTask) => {
+export const retryTask: RetryTask = (queueName, task) => {
     if (store)
         return store.dispatch({
             type: TASK_RETRY,
@@ -83,7 +83,7 @@ export const retryTask: RetryTask = (queueName: string, task: ReducerTask) => {
 }
 
 export type ClearQueue = (queueName: string) => void | ActionWithoutPayload
-export const clearQueue: ClearQueue = (queueName: string) => {
+export const clearQueue: ClearQueue = queueName => {
     if (store)
         return store.dispatch({
             type: QUEUE_CLEAR,
@@ -93,7 +93,17 @@ export const clearQueue: ClearQueue = (queueName: string) => {
     return
 }
 
-export const getQueue = (queueName: string): void | ReducerTask[] => {
+export type ResetQueue = (queueName: string) => void | ActionWithoutPayload
+export const resetQueue: ResetQueue = queueName => {
+    if (store)
+        return store.dispatch({
+            type: QUEUE_RESET,
+            queueName,
+        })
+}
+
+export type GetQueue = (queueName: string) => void | ReducerTask[]
+export const getQueue: GetQueue = queueName => {
     if (store) return store.getState().queues[queueName]
 
     return

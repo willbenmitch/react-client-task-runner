@@ -1,7 +1,15 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage } from 'react-native'
 
-import TaskRunner, { addTask, retryTask, PENDING, IN_PROGRESS, clearQueue, getQueue } from '../src'
+import TaskRunner, {
+    addTask,
+    retryTask,
+    PENDING,
+    IN_PROGRESS,
+    clearQueue,
+    getQueue,
+    resetQueue,
+} from '../src'
 import type { Task } from '../src'
 
 import Test from './Test'
@@ -29,44 +37,49 @@ export default class App extends React.Component<{}, State> {
         this.setState(state => ({ counter, success: state.success + 1 }))
     }
 
-    handleFailed = (task: Task) => {
+    getQueueLengths = (): { counter: number, failed: number } => {
         const queue = getQueue('TEST')
         const counter = queue.filter(item => item.status === PENDING || item.status === IN_PROGRESS)
             .length
         const failed = queue.filter(item => item.status === FAILED).length
+
+        return { counter, failed }
+    }
+
+    handleFailed = (task: Task) => {
+        const queue = this.getQueueLengths()
+        const { counter, failed } = queue
         this.setState({ counter, failed })
     }
 
     handleAdd = () => {
         const id = (Math.random() * 100000).toString()
         addTask('TEST', { id, status: PENDING })
-        const queue = getQueue('TEST')
-        const counter = queue.filter(item => item.status === PENDING || item.status === IN_PROGRESS)
-            .length
+        const queue = this.getQueueLengths()
+        const { counter } = queue
         this.setState({ counter })
     }
 
     handleRetry = () => {
-        const queue = getQueue('TEST')
-        const task = queue.filter(item => item.status === FAILED)[0]
+        const task = getQueue('TEST').filter(item => item.status === FAILED)[0]
         retryTask('TEST', task)
-        const newQueue = getQueue('TEST')
-        const failed = newQueue.filter(item => item.status === FAILED).length
-        const counter = newQueue.filter(
-            item => item.status === PENDING || item.status === IN_PROGRESS
-        ).length
-        this.setState({ failed, counter })
+        const queue = this.getQueueLengths()
+        const { counter, failed } = queue
+        this.setState({ counter, failed })
     }
 
     handleClear = () => {
         clearQueue('TEST')
-        const queue = getQueue('TEST')
-        const counter = queue.filter(item => item.status === PENDING || item.status === IN_PROGRESS)
-            .length
-        const success = queue.filter(item => item.status === PENDING || item.status === IN_PROGRESS)
-            .length
-        const failed = queue.filter(task => task.err).length
-        this.setState({ counter, failed, success })
+        const queue = this.getQueueLengths()
+        const { counter, failed, success } = queue
+        this.setState({ counter, failed })
+    }
+
+    handleReset = () => {
+        resetQueue('TEST')
+        const queue = this.getQueueLengths()
+        const { counter, failed, success } = queue
+        this.setState({ counter, failed })
     }
 
     render() {
@@ -83,6 +96,9 @@ export default class App extends React.Component<{}, State> {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this.handleClear} style={{ margin: 40 }}>
                     <Text>Clear Queue!</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.handleReset} style={{ margin: 40 }}>
+                    <Text>Reset Queue!</Text>
                 </TouchableOpacity>
                 <TaskRunner queueNames={queueNames} storage={AsyncStorage}>
                     <Test onDone={this.handleDone} onFailed={this.handleFailed} />

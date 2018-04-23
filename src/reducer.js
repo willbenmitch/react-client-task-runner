@@ -5,9 +5,12 @@ import {
     TASK_COMPLETE,
     TASK_FAILED,
     TASK_RETRY,
-    QUEUE_CLEAR,
     TASK_IN_PROGRESS,
+    QUEUE_CLEAR,
+    QUEUE_RESET,
 } from './actionTypes'
+
+import { PENDING } from './statusTypes'
 
 import type { StatusType } from './statusTypes'
 
@@ -60,6 +63,12 @@ export default (queueNames: string[]) => (
         case QUEUE_CLEAR:
             // $FlowFixMe
             return { ...state, [queueName]: [] }
+
+        case QUEUE_RESET:
+            const resetState = { ...state }
+            const resetQueue = resetState[queueName].map(item => ({ ...item, status: PENDING }))
+
+            return { ...state, [queueName]: resetQueue }
 
         case TASK_COMPLETE:
         case TASK_FAILED:
