@@ -11,9 +11,12 @@
 The Test app is a react native application. You will need to follow react-native getting started if you don't have react-native setup already.
 
 ### Clone, install & Run
-`git clone https://github.com/willbenmitch/react-client-task-runner.git`
+`git clone https://github.com/willbenmitch/react-task-runner.git`
+
 `cd TaskRunner && npm install`
+
 `cd TestApp && npm install`
+
 `npm start`
 
 ## Basic Usage
@@ -21,28 +24,25 @@ The intended usage is to render the `<TaskRunner />` component at the top level 
 `TaskRunner` accepts two properties a list of `queueNames` (unique strings to identify your different task queues), and `storage` (where you intend to store the tasks in between app sessions - should be `LocalStorage` for react or `AsyncStorage` for react-native).
 
 ```javascript
+    import { AsyncStorage } from 'react-native'
+    const queueNames = ['DataUploads', 'VideoUploads'] // queueNames is an array of strings that uniquely identify your queues. Name them whatever you'd like.
+
     <TaskRunner queueNames={queueNames} storage={AsyncStorage}>
-        // render your Queues here
+        {/* render your Queues here */}
     </TaskRunner>
 ```
 
 Inside `TaskRunner` you should render individual Task Queues using the `Queue` component. The structure of `Queue` is as follows:
 ```javascript
     <Queue
-        queueName={'TEST'}
+        queueName={'DataUploads'}
         onAction={this.handleAction}
         onDone={this.handleDone}
         onFailed={this.handleFailed}
     />
 ```
 
-### Components
-`TaskRunner` - default export
-The TaskRunner component
-
 ### Example
-
-
 `App.js`
 ```javascript
 import React from 'react'
@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
 ```
 
 `Test.js`
-
 ```javascript
 // @flow
 import * as React from 'react'
